@@ -27,6 +27,9 @@ import {
   ORACLE_DATA_DIR,
   REPO_ROOT,
   DB_PATH,
+  FEED_LOG,
+  PLUGINS_DIR,
+  SCHEDULE_PATH,
 } from './config.ts';
 
 import { eq, desc, gt, sql } from 'drizzle-orm';
@@ -536,8 +539,7 @@ app.get('/api/map3d', async (c) => {
   }
 });
 
-// Live Oracle feed (from ~/.arra-oracle-v2/feed.log + maw-js)
-const FEED_LOG = path.join(process.env.HOME || '/tmp', '.arra-oracle-v2', 'feed.log');
+// Live Oracle feed + maw-js (FEED_LOG imported from config.ts)
 const MAW_JS_URL = process.env.MAW_JS_URL || 'http://localhost:3456';
 
 app.get('/api/feed', async (c) => {
@@ -636,7 +638,7 @@ app.post('/api/feed', async (c) => {
 });
 
 // WASM Plugins (served from ~/.oracle/plugins/)
-const PLUGINS_DIR = path.join(process.env.HOME || '/tmp', '.arra-oracle-v2', 'plugins');
+// PLUGINS_DIR imported from config.ts
 
 app.get('/api/plugins', (c) => {
   try {
@@ -886,7 +888,7 @@ app.get('/api/session/stats', (c) => {
 
 // Serve raw schedule.md for frontend rendering
 app.get('/api/schedule/md', (c) => {
-  const schedulePath = path.join(process.env.HOME || '/tmp', '.arra-oracle-v2', 'ψ/inbox/schedule.md');
+  const schedulePath = SCHEDULE_PATH;
   if (fs.existsSync(schedulePath)) {
     return c.text(fs.readFileSync(schedulePath, 'utf-8'));
   }

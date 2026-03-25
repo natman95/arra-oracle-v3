@@ -22,7 +22,7 @@ import { eq, or, isNull, inArray } from 'drizzle-orm';
 import * as schema from './db/schema.ts';
 import { oracleDocuments } from './db/schema.ts';
 import { createDatabase } from './db/index.ts';
-import { DB_PATH } from './config.ts';
+import { DB_PATH, CHROMADB_DIR } from './config.ts';
 import { createVectorStore } from './vector/factory.ts';
 import type { VectorStoreAdapter } from './vector/types.ts';
 import { detectProject } from './server/project-detect.ts';
@@ -853,8 +853,6 @@ export class OracleIndexer {
  */
 const isMain = import.meta.url.endsWith('indexer.ts') || import.meta.url.endsWith('indexer.js');
 if (isMain) {
-  const homeDir = process.env.HOME || process.env.USERPROFILE || '/tmp';
-
   // Prefer vault repo for centralized indexing, fall back to local ψ/ detection
   const scriptDir = import.meta.dirname || path.dirname(new URL(import.meta.url).pathname);
   const projectRoot = path.resolve(scriptDir, '..');
@@ -874,7 +872,7 @@ if (isMain) {
   const config: IndexerConfig = {
     repoRoot,
     dbPath: DB_PATH,
-    chromaPath: path.join(homeDir, '.chromadb'),
+    chromaPath: CHROMADB_DIR,
     sourcePaths: {
       resonance: 'ψ/memory/resonance',
       learnings: 'ψ/memory/learnings',

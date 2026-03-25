@@ -10,6 +10,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import { ORACLE_DATA_DIR } from '../config.ts';
 
 export const TOOL_GROUPS = {
   search: ['arra_search', 'arra_read', 'arra_list', 'arra_concepts'],
@@ -42,7 +43,6 @@ function readJsonSafe(filePath: string): Record<string, any> | null {
 
 export function loadToolGroupConfig(repoRoot?: string): ToolGroupConfig {
   const root = repoRoot || process.env.ORACLE_REPO_ROOT || process.cwd();
-  const homeDir = process.env.HOME || process.env.USERPROFILE || '/tmp';
 
   // Priority 1: repo-local arra.config.json
   const localConfig = readJsonSafe(path.join(root, 'arra.config.json'));
@@ -51,8 +51,8 @@ export function loadToolGroupConfig(repoRoot?: string): ToolGroupConfig {
     return { ...DEFAULT_CONFIG, ...localConfig.tools };
   }
 
-  // Priority 2: global ~/.arra-oracle-v2/config.json
-  const globalConfig = readJsonSafe(path.join(homeDir, '.arra-oracle-v2', 'config.json'));
+  // Priority 2: global config.json in data dir
+  const globalConfig = readJsonSafe(path.join(ORACLE_DATA_DIR, 'config.json'));
   if (globalConfig?.tools) {
     console.error('[ToolGroups] Using ~/.arra-oracle-v2/config.json');
     return { ...DEFAULT_CONFIG, ...globalConfig.tools };

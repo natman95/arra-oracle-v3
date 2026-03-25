@@ -20,6 +20,8 @@ import type { VectorStoreAdapter } from './vector/types.ts';
 import path from 'path';
 import fs from 'fs';
 import { loadToolGroupConfig, getDisabledTools, type ToolGroupConfig } from './config/tool-groups.ts';
+import { ORACLE_DATA_DIR, DB_PATH, CHROMADB_DIR } from './config.ts';
+import { MCP_SERVER_NAME } from './const.ts';
 
 // Tool handlers (all extracted to src/tools/)
 import type { ToolContext } from './tools/types.ts';
@@ -96,22 +98,18 @@ class OracleMCPServer {
       console.error(`[ToolGroups] Disabled: ${disabledGroups.join(', ')}`);
     }
 
-    const homeDir = process.env.HOME || process.env.USERPROFILE || '/tmp';
-
     this.vectorStore = createVectorStore({
-      dataPath: path.join(homeDir, '.chromadb'),
+      dataPath: CHROMADB_DIR,
     });
 
     const pkg = JSON.parse(fs.readFileSync(path.join(import.meta.dirname || __dirname, '..', 'package.json'), 'utf-8'));
     this.version = pkg.version;
     this.server = new Server(
-      { name: 'arra-oracle-v2', version: this.version },
+      { name: MCP_SERVER_NAME, version: this.version },
       { capabilities: { tools: {} } }
     );
 
-    const oracleDataDir = process.env.ORACLE_DATA_DIR || path.join(homeDir, '.arra-oracle-v2');
-    const dbPath = process.env.ORACLE_DB_PATH || path.join(oracleDataDir, 'oracle.db');
-    const { sqlite, db } = createDatabase(dbPath);
+    const { sqlite, db } = createDatabase(DB_PATH);
     this.sqlite = sqlite;
     this.db = db;
 
