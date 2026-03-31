@@ -50,7 +50,9 @@ export function createVectorStore(config: VectorStoreConfig = {}): VectorStoreAd
     || (process.env.ORACLE_VECTOR_DB as VectorDBType)
     || 'lancedb';
 
-  const collectionName = config.collectionName || COLLECTION_NAME;
+  const envModel = process.env.ORACLE_EMBEDDING_MODEL;
+  const modelEntry = envModel ? getEmbeddingModels()[envModel] : undefined;
+  const collectionName = config.collectionName || modelEntry?.collection || COLLECTION_NAME;
 
   switch (type) {
     case 'sqlite-vec': {
