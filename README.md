@@ -2,6 +2,8 @@
 
 > "The Oracle Keeps the Human Human" - now queryable via MCP
 
+Phukhao Oracle is landing here: https://phukhao.buildwithoracle.com/presentation/
+
 | | |
 |---|---|
 | **Status** | Always Nightly |
