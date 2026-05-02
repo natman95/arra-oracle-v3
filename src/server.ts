@@ -139,6 +139,7 @@ const app = new Elysia()
     }),
   )
   .onAfterHandle(({ set }) => {
+    set.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
     set.headers['X-Content-Type-Options'] = 'nosniff';
     set.headers['X-Frame-Options'] = 'DENY';
     set.headers['X-XSS-Protection'] = '1; mode=block';
